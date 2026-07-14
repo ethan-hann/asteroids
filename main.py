@@ -1,7 +1,7 @@
 import pygame
 from constants import SCREEN_HEIGHT, SCREEN_WIDTH
 from logger import log_state
-import player
+from player import Player
 
 def main():
     print(f"Starting Asteroids with pygame version: {pygame.version.ver}")
@@ -13,7 +13,10 @@ def main():
     dt = 0.0
     
     # game entities
-    main_player = player.Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+    updatable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+    Player.containers = (updatable, drawable)
+    main_player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     
     while True:
         log_state()
@@ -21,12 +24,13 @@ def main():
             if event.type == pygame.QUIT:
                 return
         #update game objects here
-        main_player.update(dt)
+        updatable.update(dt)
         #-----------------------
         screen.fill("black")
         
         # draw game objects here
-        main_player.draw(screen)
+        for item in drawable:
+            item.draw(screen)
         #-----------------------
         
         pygame.display.flip()
